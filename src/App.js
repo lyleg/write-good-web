@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Editor, EditorState, Modifier} from 'draft-js';
+import {Editor, EditorState, Modifier, Entity} from 'draft-js';
 import writeGood from 'write-good'
 
 const styleMap = {
@@ -16,11 +16,7 @@ class App extends Component {
     if(recs.length >= 1){
     // Modifier.replaceText for words flagged for removal, place with entity that has custom style and tooltip with more info
       console.log(recs)
-      let nextEditorState = EditorState.push(
-      editorState,
-      nextContentState,
-      'change-inline-style'
-      this.setState({editorState:nextEditorState})
+      //this.setState({editorState:nextEditorState})
     }else{
       this.setState({editorState})
     }
