@@ -10,35 +10,35 @@ const styleMap = {
 
 let suggestions = []
 const SuggestionSpan = (props) => {
-  console.log(props)
+  debugger;
 
   return <span {...props} title = "Heeey" style={{color:'red'}}>{props.children}</span>;
 };
 
-/*const suggestionStrategy = function(contentBlock, callback){
+const suggestionStrategy = function(contentBlock, callback){
   console.log(suggestions)
   suggestions.forEach((suggestion)=>{
     callback(suggestion.index, suggestion.index + suggestion.offset, suggestion)
   })
 }
-*/
-const suggestionStrategyByEntity = function(contentBlock, callback, contentState) {
+
+/*const suggestionStrategyByEntity = function(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges(
     (character) => {
       const entityKey = character.getEntity();
       console.log(entityKey !== null)
       return (
         entityKey !== null &&
-        contentState.getEntity(entityKey).getType() === 'SUGGESTION'
+        contentState.getEntity(entityKey).getType() === 'TOKEN'
       );
     },
     callback
   );
 }
-
+*/
 const compositeDecorator = new CompositeDecorator([
   {
-    strategy: suggestionStrategyByEntity,
+    strategy: suggestionStrategy,
     component: SuggestionSpan,
   },
 ]);
@@ -47,7 +47,7 @@ const compositeDecorator = new CompositeDecorator([
 class App extends Component {
   onChange = (editorState) => {
     suggestions = this.computesuggestions(editorState)
-  /*  const newContentState = suggestions.reduce((contentState, suggestion)=>{
+    /*const newContentState = suggestions.reduce((contentState, suggestion)=>{
       let key =  Entity.create(
         'SUGGESTION',
         'IMMUTABLE',
@@ -65,25 +65,29 @@ debugger;
       );
     },editorState.getCurrentContent())*/
 
-    let newEditorState = suggestions.reduce((newEditorState, suggestion) =>{
+
+    //rewrite to do editorstate push in each iteration
+    let newContentState = suggestions.reduce((newContentState, suggestion) =>{
       let targetRange = editorState.getSelection()
       .merge({
         anchorOffset:suggestion.index,
         focusOffset:(suggestion.index + suggestion.offset)
       })
       let key =  Entity.create(
-        'SUGGESTION',
+        'TOKEN',
         'IMMUTABLE',
         {suggestion: suggestion}
       )
       return Modifier.replaceText(
-        newEditorState.getCurrentContent(),
+        editorState.getCurrentContent(),
         targetRange,
-        'entity',
+        'really',
         null,
         key
       )
-    }, editorState)
+    }, editorState.getCurrentContent())
+    let newEditorState = EditorState.push(editorState, newContentState, 'apply-entity')
+    //const newEditorState = EditorState.set(editorState, { currentContent: newContentState});
     this.setState({editorState:newEditorState})
   }
   constructor(props) {
