@@ -11,7 +11,7 @@ const styleMap = {
 let suggestions = []
 const SuggestionSpan = (props) => {
   let data = Entity.get(props.entityKey).getData()
-  return <span {...props} title = "Heeey" style={{color:'red'}}>{props.children}</span>;
+  return <span {...props} title = {data.suggestion.reason} style={{color:'red'}}>{props.children}</span>;
 };
 
 const suggestionStrategy = function(contentBlock, callback){
