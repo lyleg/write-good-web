@@ -10,8 +10,7 @@ const styleMap = {
 
 let suggestions = []
 const SuggestionSpan = (props) => {
-  debugger;
-
+  let data = Entity.get(props.entityKey).getData()
   return <span {...props} title = "Heeey" style={{color:'red'}}>{props.children}</span>;
 };
 
@@ -78,11 +77,9 @@ debugger;
         'IMMUTABLE',
         {suggestion: suggestion}
       )
-      return Modifier.replaceText(
+      return Modifier.applyEntity(
         editorState.getCurrentContent(),
         targetRange,
-        'really',
-        null,
         key
       )
     }, editorState.getCurrentContent())
