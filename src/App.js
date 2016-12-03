@@ -11,33 +11,33 @@ const styleMap = {
 let suggestions = []
 const SuggestionSpan = (props) => {
   let data = Entity.get(props.entityKey).getData()
-  return <span {...props} title = {data.suggestion.reason} style={{color:'red'}}>{props.children}</span>;
+  return <span title = {data.suggestion.reason} style={{color:'red'}}>{props.decoratedText}</span>;
 };
 
-const suggestionStrategy = function(contentBlock, callback){
+/*const suggestionStrategy = function(contentBlock, callback){
   console.log(suggestions)
   suggestions.forEach((suggestion)=>{
     callback(suggestion.index, suggestion.index + suggestion.offset, suggestion)
   })
 }
-
-/*const suggestionStrategyByEntity = function(contentBlock, callback, contentState) {
+*/
+const suggestionStrategyByEntity = function(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges(
     (character) => {
       const entityKey = character.getEntity();
       console.log(entityKey !== null)
       return (
         entityKey !== null &&
-        contentState.getEntity(entityKey).getType() === 'TOKEN'
+        Entity.get(entityKey).getType() === 'TOKEN'
       );
     },
     callback
   );
 }
-*/
+
 const compositeDecorator = new CompositeDecorator([
   {
-    strategy: suggestionStrategy,
+    strategy: suggestionStrategyByEntity,
     component: SuggestionSpan,
   },
 ]);
