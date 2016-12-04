@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-import {Editor, EditorState, CompositeDecorator, Entity, SelectionState, Modifier} from 'draft-js';
+import {Editor, EditorState, CompositeDecorator, Entity, Modifier, ContentState} from 'draft-js';
 import writeGood from 'write-good'
-
-const styleMap = {
-  'suggestion': {
-    color: 'red',
-  },
-};
 
 let suggestions = []
 const SuggestionSpan = (props) => {
@@ -14,18 +8,10 @@ const SuggestionSpan = (props) => {
   return <span title = {data.suggestion.reason} style={{color:'red'}}>{props.decoratedText}</span>;
 };
 
-/*const suggestionStrategy = function(contentBlock, callback){
-  console.log(suggestions)
-  suggestions.forEach((suggestion)=>{
-    callback(suggestion.index, suggestion.index + suggestion.offset, suggestion)
-  })
-}
-*/
 const suggestionStrategyByEntity = function(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges(
     (character) => {
       const entityKey = character.getEntity();
-      console.log(entityKey !== null)
       return (
         entityKey !== null &&
         Entity.get(entityKey).getType() === 'TOKEN'
@@ -46,51 +32,34 @@ const compositeDecorator = new CompositeDecorator([
 class App extends Component {
   onChange = (editorState) => {
     suggestions = this.computesuggestions(editorState)
-    /*const newContentState = suggestions.reduce((contentState, suggestion)=>{
-      let key =  Entity.create(
-        'SUGGESTION',
-        'IMMUTABLE',
-        {suggestion: suggestion}
-      )
-      let targetRange = editorState.getSelection()
-debugger;
-      return Modifier.applyEntity(
-        contentState,
-        targetRange.merge({
-          anchorKey:suggestion.index,
-          anchorOffset:(suggestion.index + suggestion.offset)
-        }),
-        key
-      );
-    },editorState.getCurrentContent())*/
 
+    let targetRangeTemplate = editorState.getSelection()
 
-    //rewrite to do editorstate push in each iteration
-    let newContentState = suggestions.reduce((newContentState, suggestion) =>{
-      let targetRange = editorState.getSelection()
+    let freshEditorStateWithEntities = suggestions.reduce((freshEditorState, suggestion) =>{
+      let targetRange = targetRangeTemplate
       .merge({
         anchorOffset:suggestion.index,
-        focusOffset:(suggestion.index + suggestion.offset)
+        focusOffset:(suggestion.index + suggestion.offset),
+        hasFocus: true
       })
       let key =  Entity.create(
         'TOKEN',
         'IMMUTABLE',
         {suggestion: suggestion}
       )
-      return Modifier.applyEntity(
-        editorState.getCurrentContent(),
+      let contentStateWithNewEntity =  Modifier.applyEntity(
+        freshEditorState.getCurrentContent(),
         targetRange,
         key
       )
-    }, editorState.getCurrentContent())
-    let newEditorState = EditorState.push(editorState, newContentState, 'apply-entity')
-    //const newEditorState = EditorState.set(editorState, { currentContent: newContentState});
-    this.setState({editorState:newEditorState})
+      return EditorState.push(editorState, contentStateWithNewEntity, 'apply-entity')
+    }, editorState)
+
+    this.setState({editorState:freshEditorStateWithEntities})
   }
   constructor(props) {
     super(props);
     this.state = {editorState: EditorState.createEmpty(compositeDecorator)};
-
   }
   computesuggestions(editorState){
     let plainText = editorState.getCurrentContent().getPlainText()
@@ -101,7 +70,6 @@ debugger;
     return (
       <div>
         <Editor
-          customStyleMap={styleMap}
           spellCheck={true}
           editorState={editorState}
           onChange={this.onChange} />
