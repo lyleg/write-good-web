@@ -4,10 +4,16 @@ import writeGood from 'write-good'
 
 let suggestions = []
 const SuggestionSpan = (props) => {
-  let data = Entity.get(props.entityKey).getData()
-  return <span title = {data.suggestion.reason} style={{color:'red'}}>{props.decoratedText}</span>;
+  //let data = Entity.get(props.entityKey).getData()
+  let indexMatch = props.children[0].props.start //wtf
+  let suggestion = suggestions.find(suggestion => suggestion.offset = indexMatch)
+  return <span title = {'sdf'} style={{color:'red'}}>{props.decoratedText}</span>;
 };
-
+const suggestionStrategy = function(contentBlock, callback){
+  suggestions.forEach((suggestion)=>{
+    callback(suggestion.index, suggestion.index + suggestion.offset, suggestion)
+  })
+}
 const suggestionStrategyByEntity = function(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges(
     (character) => {
@@ -23,7 +29,7 @@ const suggestionStrategyByEntity = function(contentBlock, callback, contentState
 
 const compositeDecorator = new CompositeDecorator([
   {
-    strategy: suggestionStrategyByEntity,
+    strategy: suggestionStrategy,
     component: SuggestionSpan,
   },
 ]);
@@ -33,33 +39,16 @@ class App extends Component {
   onChange = (editorState) => {
     suggestions = this.computesuggestions(editorState)
 
-    let targetRangeTemplate = editorState.getSelection()
-
-    let freshEditorStateWithEntities = suggestions.reduce((freshEditorState, suggestion) =>{
-      let targetRange = targetRangeTemplate
-      .merge({
-        anchorOffset:suggestion.index,
-        focusOffset:(suggestion.index + suggestion.offset),
-        hasFocus: true
-      })
-      let key =  Entity.create(
-        'TOKEN',
-        'IMMUTABLE',
-        {suggestion: suggestion}
-      )
-      let contentStateWithNewEntity =  Modifier.applyEntity(
-        freshEditorState.getCurrentContent(),
-        targetRange,
-        key
-      )
-      return EditorState.push(editorState, contentStateWithNewEntity, 'apply-entity')
-    }, editorState)
-
-    this.setState({editorState:freshEditorStateWithEntities})
+    this.setState({
+      editorState:editorState
+    })
   }
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty(compositeDecorator)};
+    this.state = {
+      suggestions:[],
+      editorState: EditorState.createEmpty(compositeDecorator)
+    };
   }
   computesuggestions(editorState){
     let plainText = editorState.getCurrentContent().getPlainText()
