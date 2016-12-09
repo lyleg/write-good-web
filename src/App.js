@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import {Editor, EditorState, CompositeDecorator} from 'draft-js';
+import {Map} from 'immutable'
 import writeGood from 'write-good'
 
 let suggestions = []
 const SuggestionSpan = (props) => {
-  let indexMatch = props.children[0].props.start //wtf
-  let suggestion = suggestions.find(suggestion => suggestion.index === indexMatch)
+  debugger
+  let indexMatch = props.children[0].props.start //need to declar custom decoratorType to pass extra data
+  let suggestion = suggestions.get(props.children[0].props.blockKey).find(suggestion => suggestion.index === indexMatch)
   let style = {
     backgroundColor:'#ffeee6',
     border: '1px solid #ffddcc',
@@ -15,7 +17,8 @@ const SuggestionSpan = (props) => {
 };
 
 const suggestionStrategy = function(contentBlock, callback){
-  suggestions.forEach((suggestion)=>{
+  let blockKey = contentBlock.get('key')
+  suggestions.get(blockKey).forEach((suggestion)=>{
     callback(suggestion.index, suggestion.index + suggestion.offset, suggestion)
   })
 }
@@ -43,8 +46,11 @@ class App extends Component {
     };
   }
   computesuggestions(editorState){
-    let plainText = editorState.getCurrentContent().getPlainText()
-    return writeGood(plainText) || []
+    return editorState.getCurrentContent().blockMap.reduce((suggestionsBlockMap, block) =>{
+      let key = block.get('key')
+      let suggestions = writeGood(block.get('text')) || []
+      return suggestionsBlockMap.set(key, suggestions: suggestions)
+    },Map())
   }
   render() {
     const {editorState} = this.state;
