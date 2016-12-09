@@ -4,10 +4,8 @@ import writeGood from 'write-good'
 
 let suggestions = []
 const SuggestionSpan = (props) => {
-  //let data = Entity.get(props.entityKey).getData()
   let indexMatch = props.children[0].props.start //wtf
   let suggestion = suggestions.find(suggestion => suggestion.index === indexMatch)
-  //console.log(props)
   let style = {
     backgroundColor:'#ffeee6',
     border: '1px solid #ffddcc',
@@ -29,12 +27,7 @@ const compositeDecorator = new CompositeDecorator([
   },
 ]);
 
-function cleanBlock(block){
-  let cleanCharacterList = block.characterList.map(character => {
-    return character.set('entity', null)
-  })
-  return block.set('characterList', cleanCharacterList)
-}
+
 class App extends Component {
   onChange = (editorState) =>{
     return this.setState({editorState: editorState},()=>{
