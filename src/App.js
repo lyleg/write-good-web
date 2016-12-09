@@ -5,8 +5,7 @@ import writeGood from 'write-good'
 
 let suggestions = []
 const SuggestionSpan = (props) => {
-  debugger
-  let indexMatch = props.children[0].props.start //need to declar custom decoratorType to pass extra data
+  let indexMatch = props.children[0].props.start //need to declare custom decoratorType to pass extra data
   let suggestion = suggestions.get(props.children[0].props.blockKey).find(suggestion => suggestion.index === indexMatch)
   let style = {
     backgroundColor:'#ffeee6',
@@ -55,8 +54,9 @@ class App extends Component {
   render() {
     const {editorState} = this.state;
     return (
-      <div>
+      <div style = {styles.root}>
         <Editor
+          style = {styles.editor}
           spellCheck={true}
           editorState={editorState}
           onChange={this.onChange} />
@@ -64,5 +64,22 @@ class App extends Component {
     )
   }
 }
+
+const styles = {
+  editor:{
+    borderTop: '1px solid #ddd',
+    cursor: 'text',
+    fontSize: 16,
+    marginTop: 10
+  },
+  root:{
+    background: '#fff',
+    border: '1px solid #ddd',
+    fontFamily: "'Georgia', serif",
+    fontSize: 14,
+    padding: 15
+  }
+}
+
 
 export default App;
