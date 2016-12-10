@@ -4,6 +4,9 @@ import {Map} from 'immutable'
 import writeGood from 'write-good'
 import { Popover } from 'antd';
 
+import './antd.css'
+import './Draft.css'
+
 let suggestions = []
 
 class SuggestionSpan extends Component {
