@@ -11,7 +11,6 @@ let suggestions = []
 
 class SuggestionSpan extends Component {
   remove(){
-    alert('here')
   }
   render(){
     let {props} = this
@@ -94,8 +93,8 @@ const styles = {
     border: '1px solid #ddd',
     fontFamily: "'Georgia', serif",
     fontSize: 14,
-    width: 300,
-    height:200,
+    width: 500,
+    height:300,
     padding: 15
   },
   suggestionSpan:{
