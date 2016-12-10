@@ -14,6 +14,9 @@ class SuggestionSpan extends Component {
     let {props} = this
     let indexMatch = props.children[0].props.start //need to declare custom decoratorType to pass extra data
     let suggestion = suggestions.get(props.children[0].props.blockKey).find(suggestion => suggestion.index === indexMatch)
+    if(!suggestion){//sometimes we get out of sync for one cycle if we change length of word associated with suggestion
+      return <span data-offset-key={props.offsetKey}>{props.children}</span>
+    }
     let style = {
       backgroundColor:'#ffeee6',
       border: '1px solid #ffddcc',
@@ -29,9 +32,8 @@ class SuggestionSpan extends Component {
 
 const suggestionStrategy = function(contentBlock, callback){
   let blockKey = contentBlock.get('key')
-  let block = suggestions.get(blockKey)
-  if(!block)
-    return
+  let block = suggestions.get(blockKey) || []
+
   block.forEach((suggestion)=>{
     callback(suggestion.index, suggestion.index + suggestion.offset, suggestion)
   })
@@ -46,8 +48,9 @@ const compositeDecorator = new CompositeDecorator([
 
 class App extends Component {
   onChange = (editorState) =>{
-    suggestions = this.computesuggestions(this.state.editorState)
-    this.setState({editorState: editorState})
+    this.setState({editorState: editorState},()=>{
+      suggestions = this.computesuggestions(this.state.editorState)
+    })
   }
   constructor(props) {
     super(props);
@@ -66,7 +69,7 @@ class App extends Component {
   render() {
     const {editorState} = this.state;
     return (
-      <div>
+      <div style = {{marginLeft:20}}>
         <h1>Write Good Web</h1>
         <div style = {styles.root}>
           <Editor
