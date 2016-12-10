@@ -2,17 +2,29 @@ import React, { Component } from 'react';
 import {Editor, EditorState, CompositeDecorator} from 'draft-js';
 import {Map} from 'immutable'
 import writeGood from 'write-good'
+import { Popover } from 'antd';
 
 let suggestions = []
-const SuggestionSpan = (props) => {
-  let indexMatch = props.children[0].props.start //need to declare custom decoratorType to pass extra data
-  let suggestion = suggestions.get(props.children[0].props.blockKey).find(suggestion => suggestion.index === indexMatch)
-  let style = {
-    backgroundColor:'#ffeee6',
-    border: '1px solid #ffddcc',
-    color: 666
+
+class SuggestionSpan extends Component {
+  remove(){
+    alert('here')
   }
-  return <span data-offset-key={props.offsetKey} title={suggestion.reason} style={style}>{props.children}</span>;
+  render(){
+    let {props} = this
+    let indexMatch = props.children[0].props.start //need to declare custom decoratorType to pass extra data
+    let suggestion = suggestions.get(props.children[0].props.blockKey).find(suggestion => suggestion.index === indexMatch)
+    let style = {
+      backgroundColor:'#ffeee6',
+      border: '1px solid #ffddcc',
+      color: 666
+    }
+    return (
+      <Popover content = {suggestion.reason}>
+        <span onClick ={this.remove} data-offset-key={props.offsetKey} style={style}>{props.children}</span>
+      </Popover>
+    )
+  }
 };
 
 const suggestionStrategy = function(contentBlock, callback){
@@ -29,14 +41,12 @@ const compositeDecorator = new CompositeDecorator([
   },
 ]);
 
-
 class App extends Component {
   onChange = (editorState) =>{
     return this.setState({editorState: editorState},()=>{
       suggestions = this.computesuggestions(this.state.editorState)
     })
   }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -54,12 +64,16 @@ class App extends Component {
   render() {
     const {editorState} = this.state;
     return (
-      <div style = {styles.root}>
-        <Editor
-          style = {styles.editor}
-          spellCheck={true}
-          editorState={editorState}
-          onChange={this.onChange} />
+      <div>
+        <h1>Write Good Web</h1>
+        <div style = {styles.root}>
+          <Editor
+            style = {styles.editor}
+            spellCheck={true}
+            editorState={editorState}
+            onChange={this.onChange} />
+        </div>
+        <p>A simple web interface to <a href ="https://github.com/btford/write-good"> Write Good </a></p>
       </div>
     )
   }
@@ -80,6 +94,5 @@ const styles = {
     padding: 15
   }
 }
-
 
 export default App;
