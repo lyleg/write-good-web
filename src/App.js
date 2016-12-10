@@ -20,14 +20,9 @@ class SuggestionSpan extends Component {
     if(!suggestion){//sometimes we get out of sync for one cycle if we change length of word associated with suggestion
       return <span data-offset-key={props.offsetKey}>{props.children}</span>
     }
-    let style = {
-      backgroundColor:'#ffeee6',
-      border: '1px solid #ffddcc',
-      color: 666
-    }
     return (
       <Popover content = {suggestion.reason}>
-        <span onClick ={this.remove} data-offset-key={props.offsetKey} style={style}>{props.children}</span>
+        <span onClick ={this.remove} data-offset-key={props.offsetKey} style={styles.suggestionSpan}>{props.children}</span>
       </Popover>
     )
   }
@@ -102,6 +97,11 @@ const styles = {
     width: 300,
     height:200,
     padding: 15
+  },
+  suggestionSpan:{
+    backgroundColor:'#ffeee6',
+    border: '1px solid #ffddcc',
+    color: 666
   }
 }
 
