@@ -29,7 +29,10 @@ class SuggestionSpan extends Component {
 
 const suggestionStrategy = function(contentBlock, callback){
   let blockKey = contentBlock.get('key')
-  suggestions.get(blockKey).forEach((suggestion)=>{
+  let block = suggestions.get(blockKey)
+  if(!block)
+    return
+  block.forEach((suggestion)=>{
     callback(suggestion.index, suggestion.index + suggestion.offset, suggestion)
   })
 }
@@ -43,9 +46,8 @@ const compositeDecorator = new CompositeDecorator([
 
 class App extends Component {
   onChange = (editorState) =>{
-    return this.setState({editorState: editorState},()=>{
-      suggestions = this.computesuggestions(this.state.editorState)
-    })
+    suggestions = this.computesuggestions(this.state.editorState)
+    this.setState({editorState: editorState})
   }
   constructor(props) {
     super(props);
@@ -91,6 +93,8 @@ const styles = {
     border: '1px solid #ddd',
     fontFamily: "'Georgia', serif",
     fontSize: 14,
+    width: 300,
+    height:200,
     padding: 15
   }
 }
