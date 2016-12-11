@@ -16,10 +16,6 @@ class SuggestionSpan extends Component {
   }
   render(){
     let {suggestion, offsetKey, children} = this.props
-
-    if(!suggestion){//sometimes we get out of sync for one cycle if we change length of word associated with suggestion
-      return <span data-offset-key={offsetKey}>{children}</span>
-    }
     return (
       <Popover content = {suggestion.reason}>
         <span onClick ={this.remove} data-offset-key={offsetKey} style={styles.suggestionSpan}>{children}</span>
@@ -29,10 +25,8 @@ class SuggestionSpan extends Component {
 };
 
 const suggestionStrategy = function(contentBlock, callback){
-  let blockKey = contentBlock.get('key')
-  let block = suggestions.get(blockKey) || []
-
-  block.forEach((suggestion)=>{
+  let suggestions = writeGood(contentBlock.get('text')) || []
+  suggestions.forEach(suggestion=>{
     callback(suggestion.index, suggestion.index + suggestion.offset, {suggestion:suggestion})
   })
 }
@@ -41,9 +35,7 @@ const compositeDecorator = new SimpleDecorator(suggestionStrategy, SuggestionSpa
 
 class App extends Component {
   onChange = (editorState) =>{
-    this.setState({editorState: editorState},()=>{
-      suggestions = this.computesuggestions(this.state.editorState)
-    })
+    this.setState({editorState: editorState})
   }
   constructor(props) {
     super(props);
@@ -52,13 +44,7 @@ class App extends Component {
       editorState: EditorState.createEmpty(compositeDecorator)
     };
   }
-  computesuggestions(editorState){
-    return editorState.getCurrentContent().blockMap.reduce((suggestionsBlockMap, block) =>{
-      let key = block.get('key')
-      let suggestions = writeGood(block.get('text')) || []
-      return suggestionsBlockMap.set(key, suggestions: suggestions)
-    },Map())
-  }
+
   render() {
     const {editorState} = this.state;
     return (
