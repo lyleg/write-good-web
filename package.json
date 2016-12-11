@@ -10,6 +10,7 @@
     "antd": "^2.5.1",
     "draft-js": "^0.9.1",
     "draft-js-simpledecorator": "^1.0.1",
+    "github-fork-ribbon-css": "^0.2.1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "write-good": "^0.9.1"

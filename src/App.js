@@ -7,6 +7,7 @@ import SimpleDecorator from 'draft-js-simpledecorator'
 
 import './antd.css'
 import './Draft.css'
+import './gh-fork-ribbon.css'
 
 let suggestions = []
 
