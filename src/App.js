@@ -9,8 +9,6 @@ import './antd.css'
 import './Draft.css'
 import './gh-fork-ribbon.css'
 
-let suggestions = []
-
 class SuggestionSpan extends Component {
   remove(){
   }
@@ -34,15 +32,12 @@ const suggestionStrategy = function(contentBlock, callback){
 const compositeDecorator = new SimpleDecorator(suggestionStrategy, SuggestionSpan)
 
 class App extends Component {
-  onChange = (editorState) =>{
-    this.setState({editorState: editorState})
-  }
   constructor(props) {
     super(props);
     this.state = {
-      suggestions:[],
       editorState: EditorState.createEmpty(compositeDecorator)
     };
+    this.onChange = (editorState) => this.setState({editorState});
   }
 
   render() {
