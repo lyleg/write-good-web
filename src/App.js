@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import {Editor, EditorState, CompositeDecorator} from 'draft-js';
+import React, { Component } from 'react'
+import {Editor, EditorState, CompositeDecorator} from 'draft-js'
 import {Map} from 'immutable'
 import writeGood from 'write-good'
-import { Popover } from 'antd';
+import { Popover } from 'antd'
+import SimpleDecorator from 'draft-js-simpledecorator'
 
 import './antd.css'
 import './Draft.css'
@@ -13,15 +14,14 @@ class SuggestionSpan extends Component {
   remove(){
   }
   render(){
-    let {props} = this
-    let indexMatch = props.children[0].props.start //need to declare custom decoratorType to pass extra data
-    let suggestion = suggestions.get(props.children[0].props.blockKey).find(suggestion => suggestion.index === indexMatch)
+    let {suggestion, offsetKey, children} = this.props
+
     if(!suggestion){//sometimes we get out of sync for one cycle if we change length of word associated with suggestion
-      return <span data-offset-key={props.offsetKey}>{props.children}</span>
+      return <span data-offset-key={offsetKey}>{children}</span>
     }
     return (
       <Popover content = {suggestion.reason}>
-        <span onClick ={this.remove} data-offset-key={props.offsetKey} style={styles.suggestionSpan}>{props.children}</span>
+        <span onClick ={this.remove} data-offset-key={offsetKey} style={styles.suggestionSpan}>{children}</span>
       </Popover>
     )
   }
@@ -32,16 +32,11 @@ const suggestionStrategy = function(contentBlock, callback){
   let block = suggestions.get(blockKey) || []
 
   block.forEach((suggestion)=>{
-    callback(suggestion.index, suggestion.index + suggestion.offset, suggestion)
+    callback(suggestion.index, suggestion.index + suggestion.offset, {suggestion:suggestion})
   })
 }
 
-const compositeDecorator = new CompositeDecorator([
-  {
-    strategy: suggestionStrategy,
-    component: SuggestionSpan,
-  },
-]);
+const compositeDecorator = new SimpleDecorator(suggestionStrategy, SuggestionSpan)
 
 class App extends Component {
   onChange = (editorState) =>{

@@ -4,11 +4,12 @@
   "private": true,
   "devDependencies": {
     "list": "^0.9.1",
-    "react-scripts": "0.7.0"
+    "react-scripts": "0.8.4"
   },
   "dependencies": {
     "antd": "^2.5.1",
     "draft-js": "^0.9.1",
+    "draft-js-simpledecorator": "^1.0.1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "write-good": "^0.9.1"
