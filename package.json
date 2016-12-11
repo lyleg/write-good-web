@@ -4,7 +4,7 @@
   "private": true,
   "devDependencies": {
     "list": "^0.9.1",
-    "react-scripts": "0.8.4"
+    "react-scripts": "0.7.0"
   },
   "dependencies": {
     "antd": "^2.5.1",
