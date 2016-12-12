@@ -31,8 +31,19 @@ const styles = {
   }
 }
 
+type Suggestion = {
+  index: number,
+  offset: number,
+  reason: string
+}
+
+type SuggestionSpanProps = {
+  offsetKey:string,
+  suggestion:Suggestion
+}
 class SuggestionSpan extends Component {
-  remove(){
+  props:SuggestionSpanProps
+  remove(){//?
   }
   render(){
     let {suggestion, offsetKey, children} = this.props
@@ -45,7 +56,6 @@ class SuggestionSpan extends Component {
 };
 
 const suggestionStrategy = function(contentBlock, callback){
-  debugger
   let suggestions = writeGood(contentBlock.get('text')) || []
   suggestions.forEach(suggestion=>{
     callback(suggestion.index, suggestion.index + suggestion.offset, {suggestion:suggestion})
@@ -54,13 +64,18 @@ const suggestionStrategy = function(contentBlock, callback){
 
 const simpleDecorator = new SimpleDecorator(suggestionStrategy, SuggestionSpan)
 
+type AppProps = {}
 class App extends Component {
+  props: AppProps
+  state:{
+    editorState:Object
+  }
   constructor(props) {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(simpleDecorator)
     };
-    this.onChange = (editorState) => this.setState({editorState});
+    this.onChange = (editorState:Object) => this.setState({editorState});
   }
 
   render() {
