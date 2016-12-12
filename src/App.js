@@ -29,13 +29,13 @@ const suggestionStrategy = function(contentBlock, callback){
   })
 }
 
-const compositeDecorator = new SimpleDecorator(suggestionStrategy, SuggestionSpan)
+const simpleDecorator = new SimpleDecorator(suggestionStrategy, SuggestionSpan)
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty(compositeDecorator)
+      editorState: EditorState.createEmpty(simpleDecorator)
     };
     this.onChange = (editorState) => this.setState({editorState});
   }
