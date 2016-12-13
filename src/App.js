@@ -43,13 +43,11 @@ type SuggestionSpanProps = {
 }
 class SuggestionSpan extends Component {
   props:SuggestionSpanProps
-  remove(){//?
-  }
   render(){
     let {suggestion, offsetKey, children} = this.props
     return (
       <Popover content={suggestion.reason}>
-        <span onClick={this.remove} data-offset-key={offsetKey} style={styles.suggestionSpan}>{children}</span>
+        <span data-offset-key={offsetKey} style={styles.suggestionSpan}>{children}</span>
       </Popover>
     )
   }
