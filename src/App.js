@@ -1,3 +1,4 @@
+//@flow
 import React, { Component } from 'react'
 import {Editor, EditorState } from 'draft-js'
 import writeGood from 'write-good'
@@ -89,6 +90,7 @@ class App extends Component {
             onChange={this.onChange} />
         </div>
         <p>A simple web interface to <a href="https://github.com/btford/write-good"> Write Good </a></p>
+        <a class="github-fork-ribbon right-top" href="https://github.com/lyleg/write-good-web" title="Fork me on GitHub">Fork me on GitHub</a>
       </div>
     )
   }
