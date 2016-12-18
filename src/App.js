@@ -7,7 +7,6 @@ import SimpleDecorator from 'draft-js-simpledecorator'
 
 import './antd.css'
 import './Draft.css'
-import './gh-fork-ribbon.css'
 
 const styles = {
   editor:{
@@ -40,7 +39,8 @@ type Suggestion = {
 
 type SuggestionSpanProps = {
   offsetKey:string,
-  suggestion:Suggestion
+  suggestion:Suggestion,
+  children:React.Element<*>
 }
 class SuggestionSpan extends Component {
   props:SuggestionSpanProps
@@ -69,7 +69,8 @@ class App extends Component {
   state:{
     editorState:Object
   }
-  constructor(props) {
+  onChange:Function
+  constructor(props:AppProps) {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(simpleDecorator)
@@ -89,8 +90,7 @@ class App extends Component {
             editorState={editorState}
             onChange={this.onChange} />
         </div>
-        <p>A simple web interface to <a href="https://github.com/btford/write-good"> Write Good </a></p>
-        <a class="github-fork-ribbon right-top" href="https://github.com/lyleg/write-good-web" title="Fork me on GitHub">Fork me on GitHub</a>
+        <p style = {{marginTop:50}}>A simple web interface to <a target = "_blank" href="https://github.com/btford/write-good"> Write Good </a></p>
       </div>
     )
   }
