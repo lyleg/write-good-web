@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "react-scripts-env-in-html": "0.0.2",
     "gh-pages": "^0.12.0",
     "list": "^0.9.1",
-    "react-scripts": "0.7.0",
     "sw-precache": "^4.2.3"
   },
   "dependencies": {
