@@ -1,6 +1,6 @@
 //@flow
 import React, { Component } from 'react'
-import {Editor, EditorState } from 'draft-js'
+import {Editor, EditorState, ContentState } from 'draft-js'
 import writeGood from 'write-good'
 import { Popover } from 'antd'
 import SimpleDecorator from 'draft-js-simpledecorator'
@@ -63,6 +63,10 @@ const suggestionStrategy = function(contentBlock, callback){
 
 const simpleDecorator = new SimpleDecorator(suggestionStrategy, SuggestionSpan)
 
+
+let sampleText = `So the cat was stolen. I would really like it you could e-mail me back.`
+
+
 type AppProps = {}
 class App extends Component {
   props: AppProps
@@ -72,10 +76,11 @@ class App extends Component {
   onChange:Function
   constructor(props:AppProps) {
     super(props);
+    let initialContentState = ContentState.createFromText(sampleText)
     this.state = {
-      editorState: EditorState.createEmpty(simpleDecorator)
+      editorState: EditorState.createWithContent(initialContentState, simpleDecorator)
     };
-    this.onChange = (editorState:Object) => this.setState({editorState});
+    this.onChange = (editorState:Object) => this.setState({editorState})
   }
 
   render() {
@@ -90,7 +95,7 @@ class App extends Component {
             editorState={editorState}
             onChange={this.onChange} />
         </div>
-        <p style = {{marginTop:50}}>A simple web interface to <a target = "_blank" href="https://github.com/btford/write-good"> Write Good </a></p>
+        <p style={{marginTop:50}}>A simple web interface to <a target="_blank" href="https://github.com/btford/write-good"> Write Good </a></p>
       </div>
     )
   }
