@@ -3,6 +3,8 @@
   "homepage": "https://lyleg.github.io/write-good-web/",
   "version": "0.1.0",
   "private": true,
+  "author": "Lyle Garza",
+  "license": "MIT",
   "devDependencies": {
     "react-scripts-env-in-html": "0.0.2",
     "gh-pages": "^0.12.0",
