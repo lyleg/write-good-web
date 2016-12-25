@@ -1,12 +1,15 @@
 //@flow
 import React, { Component } from 'react'
 import {Editor, EditorState, ContentState } from 'draft-js'
-import writeGood from 'write-good'
-import { Popover } from 'antd'
 import SimpleDecorator from 'draft-js-simpledecorator'
+import {SuggestionSpan, suggestionStrategy} from './suggestion'
 
-import './antd.css'
+import './App.css'
 import './Draft.css'
+
+const simpleDecorator = new SimpleDecorator(suggestionStrategy, SuggestionSpan)
+
+let sampleText = `So the cat was stolen. I would really like it you could e-mail me back.`
 
 const styles = {
   editor:{
@@ -31,40 +34,8 @@ const styles = {
   }
 }
 
-type Suggestion = {
-  index: number,
-  offset: number,
-  reason: string
-}
-
-type SuggestionSpanProps = {
-  offsetKey:string,
-  suggestion:Suggestion,
-  children:React.Element<*>
-}
-class SuggestionSpan extends Component {
-  props:SuggestionSpanProps
-  render(){
-    let {suggestion, offsetKey, children} = this.props
-    return (
-      <Popover content={suggestion.reason}>
-        <span data-offset-key={offsetKey} style={styles.suggestionSpan}>{children}</span>
-      </Popover>
-    )
-  }
-};
-
-const suggestionStrategy = function(contentBlock, callback){
-  let suggestions = writeGood(contentBlock.get('text')) || []
-  suggestions.forEach(suggestion=>{
-    callback(suggestion.index, suggestion.index + suggestion.offset, {suggestion:suggestion})
-  })
-}
-
-const simpleDecorator = new SimpleDecorator(suggestionStrategy, SuggestionSpan)
 
 
-let sampleText = `So the cat was stolen. I would really like it you could e-mail me back.`
 
 
 type AppProps = {}
@@ -85,12 +56,18 @@ class App extends Component {
 
   render() {
     const {editorState} = this.state;
+    const editorStyle = {
+      borderTop: '1px solid #ddd',
+      cursor: 'text',
+      fontSize: 16,
+      marginTop: 10
+    };
     return (
       <div style={{marginLeft:20}}>
         <h1>Write Good Web</h1>
-        <div style={styles.root}>
+        <div className = 'editorContainer'>
           <Editor
-            style={styles.editor}
+            style={editorStyle}
             spellCheck={true}
             editorState={editorState}
             onChange={this.onChange} />
